@@ -33,6 +33,8 @@ last_calls = {}
 
 file = ARGV.first || 'ktrace.out'
 
+max_cmd = 0
+
 IO.popen(%w[kdump -HEnsf] + [file]) do |kdump|
   kdump.each_line do |event|
     bits = event.split(/\s+/, 7)
@@ -45,7 +47,9 @@ IO.popen(%w[kdump -HEnsf] + [file]) do |kdump|
       last_calls[id] = event
     when 'RET'
       next unless (last_call = last_calls[id])
-      c = calls[event.call.scan(/\S+/).first]
+      fn = event.call.scan(/\S+/).first
+      max_cmd = fn.length if max_cmd < fn.length
+      c = calls[fn]
       c.calls += 1
       elapsed = event.time - last_call.time
       c.total += elapsed
@@ -56,10 +60,10 @@ IO.popen(%w[kdump -HEnsf] + [file]) do |kdump|
   end
 end
 
+fmt = "%#{max_cmd}.#{max_cmd}s: %2.5fs %5d calls | Avg=%.5fs Max=%.5fs Min=%.5fs StdDev=%.5fs\n"
+
 calls.sort_by { |x| x[1].total }.reverse_each do |r|
   c = r[1]
-  printf(
-    "%16.16s: %2.5fs %5d calls | Avg=%.5fs Max=%.5fs Min=%.5fs StdDev=%.5fs\n",
-    c.call, c.total, c.calls, c.total / c.calls, c.max, c.min, c.stddev.stddev
-  )
+  printf(fmt,
+    c.call, c.total, c.calls, c.total / c.calls, c.max, c.min, c.stddev.stddev)
 end
