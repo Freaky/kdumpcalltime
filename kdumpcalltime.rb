@@ -58,6 +58,8 @@ end
 
 calls.sort_by { |x| x[1].total }.reverse_each do |r|
   c = r[1]
-  printf("%16.16s: %2.5fs in %5d calls | Avg=%.5fs Max=%.5fs Min=%.5fs StdDev=%.5fs\n",
-         c.call, c.total, c.calls, c.total / c.calls, c.max, c.min, c.stddev.stddev)
+  printf(
+    "%16.16s: %2.5fs %5d calls | Avg=%.5fs Max=%.5fs Min=%.5fs StdDev=%.5fs\n",
+    c.call, c.total, c.calls, c.total / c.calls, c.max, c.min, c.stddev.stddev
+  )
 end
