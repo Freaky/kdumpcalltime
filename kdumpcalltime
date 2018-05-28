@@ -67,7 +67,7 @@ IO.popen(%w[kdump -HEnsf] + [file]) do |kdump|
     when 'CALL'
       last_calls[id] = event
     when 'RET'
-      next unless (last_call = last_calls[id])
+      next unless (last_call = last_calls.delete(id))
       fn = event.call.scan(/\S+/).first
       max_cmd = fn.length if max_cmd < fn.length
       c = calls[fn]
