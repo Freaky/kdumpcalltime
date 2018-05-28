@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
+
 ################################################################################
 # Copyright 2018 Thomas Hurst <tom@hur.st>
 #
@@ -58,8 +59,7 @@ max_cmd = 0
 
 IO.popen(%w[kdump -HEnsf] + [file]) do |kdump|
   kdump.each_line do |event|
-    bits = event.split(/\s+/, 7)
-    _, pid, tid, process, time, type, call = *bits
+    _, pid, tid, process, time, type, call = event.split(/\s+/, 7)
     id = pid.to_i | (tid.to_i << 16)
     event = Event.new(id, process, time.to_f, type, call)
 
