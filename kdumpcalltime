@@ -60,7 +60,7 @@ max_cmd = 0
 IO.popen(%w[kdump -HEnsf] + [file]) do |kdump|
   kdump.each_line do |event|
     _, pid, tid, process, time, type, call = event.split(/\s+/, 7)
-    id = pid.to_i | (tid.to_i << 16)
+    id = pid.to_i | (tid.to_i << 32)
     event = Event.new(id, process, time.to_f, type, call)
 
     case event.type
