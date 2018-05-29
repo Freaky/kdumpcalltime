@@ -2,12 +2,18 @@
 
 A tiny Ruby script for summarising system call times in [`ktrace`][ktrace] files.
 
+Tested on FreeBSD, hopefully works on other systems with ktrace.  Please open an
+issue (or ideally a pull request) if it does not.
+
 
 ## Synopsis
 
 ```
 kdumpcalltime [FILE]
 ```
+
+`FILE` defaults to ktrace.out, matching `ktrace` and `kdump`.
+
 
 ## Example
 
